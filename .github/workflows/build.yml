@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  publish-hello-docker-image:  # The name of the job
+    runs-on: ubuntu-latest  # Specifies the runner for this job
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Checkout code  # Step to checkout your code
+      uses: actions/checkout@v2  # Uses the official action to check out the code
+
+    - name: Login to GitHub Container Registry  # Step to log in to the GHCR
+      uses: docker/login-action@v1  # Uses the Docker login action
+      with:
+        registry: ghcr.io  # Specifies the GHCR as the Docker registry
+        username: ${{ github.actor }}  # Uses the GitHub actor (your username) as the Docker username
+        password: ${{ secrets.GITHUB_TOKEN }}  # Uses the GitHub token as the Docker password
+
+    - name: Build the hello-docker Docker image  # Step to build the Docker image
+      run: |
+        docker build . --tag ghcr.io/ulrich-sun/hello-docker-gcr-demo:latest  # Builds a Docker image with a specified tag
+        docker run ghcr.io/ulrich-sun/hello-docker-gcr-demo:latest  # Runs the Docker image (not typical in a GitHub Actions workflow)
+        docker push ghcr.io/ulrich-sun/hello-docker-gcr-demo:latest  # Pushes the Docker image to GHCR

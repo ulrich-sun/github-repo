@@ -9,7 +9,7 @@ WORKDIR /tmp
 RUN git clone https://github.com/diranetafen/static-website-example.git
 
 RUN rm -rf /usr/share/nginx/html/*
-
+# Suppression du contenu html
 RUN mv /tmp/static-website-example/* /usr/share/nginx/html/
 
 CMD ["nginx", "-g", "daemon off;"]
